@@ -8,18 +8,22 @@ const windowWidth = Dimensions.get('window').width; // Get the width of the wind
 const windowHeight = Dimensions.get('window').height; // Get the height of the window
 
 export default function App() {
+  // This is a simple Todo List application using React Native
   const [task, setTask] = useState('');
   const [tasks, setTasks] = useState([]);
   const [editingId, setEditingId] = useState(null);
 
+  // useEffect hooks to load and save tasks from/to AsyncStorage
   useEffect(() => {
     loadTasks();
   }, []);
 
+  // This useEffect hook saves tasks to AsyncStorage whenever the tasks state changes
   useEffect(() => {
     saveTasks();
   }, [tasks]);
 
+  // Functions to load and save tasks from/to AsyncStorage
   const loadTasks = async () => {
     try {
       const storedTasks = await AsyncStorage.getItem('tasks');
@@ -29,6 +33,8 @@ export default function App() {
     }
   };
 
+  // This function saves the tasks to AsyncStorage
+  // It is called whenever the tasks state changes
   const saveTasks = async () => {
     try {
       await AsyncStorage.setItem('tasks', JSON.stringify(tasks));
@@ -37,6 +43,8 @@ export default function App() {
     }
   };
 
+  // This function adds or updates a task
+  // If editingId is set, it updates the task; otherwise, it adds a new task
   const addOrUpdateTask = () => {
     if (task.trim() === '') return;
 
@@ -51,6 +59,8 @@ export default function App() {
     setTask('');
   };
 
+  // This function is used to edit a task
+  // It sets the task input to the task's title and sets the editingId to the task's id
   const editTask = (id) => {
     const taskToEdit = tasks.find(t => t.id === id);
     if (taskToEdit) {
@@ -59,6 +69,8 @@ export default function App() {
     }
   };
 
+  // This function is used to delete a task
+  // It shows an alert to confirm the deletion
   const deleteTask = (id) => {
     Alert.alert('Delete Task', 'Are you sure? You want to delete this task.', [
       { text: 'Cancel', style: 'cancel' },
@@ -75,13 +87,14 @@ export default function App() {
     ]);
   };
 
+  // This function toggles the completion status of a task
+  // It updates the task's completed status and saves the updated tasks to AsyncStorage
+  // It also shows an alert with the updated tasks
   const toggleComplete = (id) => {
     const updatedTasks = tasks.map(task =>
       task.id === id ? { ...task, completed: !task.completed } : task
     );
     setTasks(updatedTasks);
-    console.log(updatedTasks, 'updatedTasks')
-    alert(JSON.stringify(updatedTasks))
   };
 
   useEffect(() => { }, [tasks]);
